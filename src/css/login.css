@@ -1,0 +1,14 @@
+.login-component .login-container
+{
+    background-color: rgb(195, 241, 245);
+    margin-top: 30vh;
+}
+.login-component
+{
+    height: 100vh;
+    width: 100vw;
+    background-image: url("https://cdn.wallpapersafari.com/41/11/Zio7ra.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    overflow: hidden;
+}

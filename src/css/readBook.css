@@ -1,0 +1,25 @@
+.read-book-component .mouse-out-hover
+{
+    background-color: none !important;
+}
+.read-book-component
+{
+    height: 100vh;
+    overflow-x: hidden !important;
+    height: 100vh;
+    width: 100vw;
+    background-image: url("https://images5.alphacoders.com/931/thumbbig-931453.webp");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    z-index: -1;
+    
+}
+.book-title
+{
+    color: rgb(238, 255, 2);
+    cursor: pointer;
+}
+/* .book-title:hover
+{
+    transform: scale(1.2); 
+} */

@@ -1,0 +1,102 @@
+.hover-opacity {}
+
+.hover-opacity img {
+    opacity: 1;
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+}
+
+.hover-opacity:hover img {
+    opacity: .5;
+}
+
+.hover-opacity:hover .button-img-1-home {
+    opacity: 1;
+}
+
+.hover-opacity:hover .button-img-2-home {
+    opacity: 1;
+}
+
+.text-header {
+    color: rgb(16, 95, 180);
+}
+
+.button-img-1-home {
+    position: absolute;
+    top: 45%;
+    left: 38% !important;
+    opacity: 0;
+    transition: .5s ease;
+}
+
+.header-1 {}
+
+.mouse-out-hover::before {
+    transform: scaleX(0);
+    transform-origin: bottom right;
+}
+
+.mouse-out-hover:hover::before {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+.mouse-out-hover::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    inset: 0 0 0 0;
+    background: hsl(200 100% 80%);
+    z-index: -1;
+    transition: transform .3s ease;
+    border-radius: 10px !important;
+}
+
+.mouse-out-hover {
+    position: relative;
+    font-size: 5rem;
+
+}
+
+.mouse-out-hover::before {
+    transform: scaleX(0);
+    transform-origin: bottom right;
+}
+
+.mouse-out-hover:hover::before {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+.mouse-out-hover::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    inset: 0 0 0 0;
+    background: rgb(151, 238, 52);
+    z-index: -1;
+    transition: transform .3s ease;
+    border-radius: 10px !important;
+}
+
+.mouse-out-hover {
+    position: relative;
+    font-size: 5rem;
+
+}
+.home-component
+{
+    overflow-x: hidden;
+    height: 100vh;
+    z-index: -1;
+    background-color: rgb(212, 241, 245);
+}
