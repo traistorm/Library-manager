@@ -435,53 +435,6 @@ function Book(props) {
                     }
                 })
 
-
-            // authorForBookOldList.forEach(authorOld => {
-            //     var check = false;
-            //     authorForBookList.forEach(authorNew => {
-            //         if (authorOld.authorid == authorNew.authorid) {
-            //             check = true;
-            //         }
-            //     })
-            //     if (check == false) {
-            //         authorIndex ++;
-            //         //alert(authorOld.authorid)
-            //         //var bodyFormData = new FormData();
-            //         //bodyFormData.append("bookid", bookIDEditBook);
-            //         //bodyFormData.append("authorid", authorOld.authorid);
-            //         axios.delete("http://localhost:8080/api/v1/book-author/" + bookIDEditBook + "/" + authorOld.authorid, null, {
-            //             headers: {
-            //                 "Content-Type": "multipart/form-data",
-            //             },
-            //         })
-            //             .then((res) => {
-            //                 //alert(res.data.length)
-            //                 //alert()
-            //             }, (error) => {
-            //                 alert(error)
-            //             })
-            //     }
-            // });
-
-            // authorForBookList.forEach(item => {
-
-            //     var bodyFormData = new FormData();
-            //     bodyFormData.append("bookid", bookIDEditBook);
-            //     bodyFormData.append("authorid", item.authorid);
-            //     axios.put("http://localhost:8080/api/v1/book-author", bodyFormData, {
-            //         headers: {
-            //             "Content-Type": "multipart/form-data",
-            //         },
-            //     })
-            //         .then((res) => {
-            //             //alert(res.data.length)
-            //             //alert()
-            //         }, (error) => {
-            //             alert(error)
-            //         })
-            // })
-
-
         }
         else {
             window.location.href = "/";
@@ -521,7 +474,6 @@ function Book(props) {
         }
     }
     const handleChangePage = (event, newPage) => {
-        //alert(currentPage)
 
         if (currentPage != newPage) {
             //alert()
@@ -554,6 +506,7 @@ function Book(props) {
                     formData.append("page", newPage);
                     formData.append("itemperpage", itemPerPage);
                     formData.append("token", Cookies.get('token'));
+                    
                     axios.post("http://localhost:8080/api/v1/books/search", formData, {
                         headers: {
                             "Content-Type": "multipart/form-data",
