@@ -446,27 +446,20 @@ function Book(props) {
     };
     const deleteBook = () => {
         if (Cookies.get('token') != "undefined") {
-            axios.post("http://localhost:8080/api/v1/login", null, { params: { token: Cookies.get('token') } })
-                .then((res) => {
-                    if (res.status == 200) {
-                        axios.delete("http://localhost:8080/api/v1/books", { params: { bookid: bookIDEditBook } })
-                            .then(res => {
 
-                                //alert(Math.ceil(res.data.length / itemPerPage))
-                                //alert()
-                            })
+            axios.delete("http://localhost:8080/api/v1/books", { params: { bookid: bookIDEditBook, token: Cookies.get('token') } })
+                .then(res => {
 
-                    }
-                    else {
-                        window.location.href = "/book";
-                    }
+                    //alert(Math.ceil(res.data.length / itemPerPage))
                     //alert()
-                }, (error) => {
-                    //alert(Cookies.get('token'))
+                    window.location.href = "/book";
+                }, error => {
                     if (error.response.status == 408) {
                         window.location.href = "/book";
                     }
                 })
+
+
         }
         else {
 
@@ -485,7 +478,7 @@ function Book(props) {
                     // formData.append("page", newPage);
                     // formData.append("itemperpage", itemPerPage);
                     // formData.append("token", Cookies.get('token'));
-                    axios.get("http://localhost:8080/api/v1/books", {params : {"page": newPage, "itemperpage": itemPerPage, "token": Cookies.get('token')}}, {
+                    axios.get("http://localhost:8080/api/v1/books", { params: { "page": newPage, "itemperpage": itemPerPage, "token": Cookies.get('token') } }, {
                         headers: {
                             "Content-Type": "multipart/form-data",
                         },
@@ -506,7 +499,7 @@ function Book(props) {
                     formData.append("page", newPage);
                     formData.append("itemperpage", itemPerPage);
                     formData.append("token", Cookies.get('token'));
-                    
+
                     axios.post("http://localhost:8080/api/v1/books/search", formData, {
                         headers: {
                             "Content-Type": "multipart/form-data",
@@ -655,7 +648,7 @@ function Book(props) {
                         type="number"
                         autoComplete="current-password"
                         variant="standard"
-                        className="mb-4"
+                        className="mb-2"
                         value={remainingEditBook}
                         onChange={handleChangeRemainingEditBook}
                     />
@@ -671,7 +664,7 @@ function Book(props) {
                     >
                         Thêm tác giả
                     </Typography>
-                    <FormControl sx={{ minWidth: 150 }} className="mb-3" >
+                    <FormControl sx={{ minWidth: 150 }} className="mb-2" >
                         <InputLabel id="demo-simple-select-helper-label">Tác giả</InputLabel>
                         <Select
                             labelId="demo-simple-select-helper-label"
@@ -701,7 +694,7 @@ function Book(props) {
                     >
                         Danh sách tác giả hiện tại
                     </Typography>
-                    <List className="mb-4"
+                    <List className="mb-2"
                         aria-labelledby="decorated-list-demo"
                         sx={{ '--List-decorator-size': '32px' }}
                         style={{ maxHeight: "120px", overflowY: "auto" }}
@@ -719,7 +712,7 @@ function Book(props) {
                     </List>
 
                     <br />
-                    <FormControl sx={{ minWidth: 150 }} className="mb-3">
+                    <FormControl sx={{ minWidth: 150 }} className="mb-2">
                         <InputLabel id="demo-simple-select-helper-label">Nhà xuất bản</InputLabel>
                         <Select
                             labelId="demo-simple-select-helper-label"
@@ -737,7 +730,7 @@ function Book(props) {
 
                     </FormControl>
 
-                    <TextField className="mb-3"
+                    <TextField className="mb-2"
                         id="date"
                         label="Ngày xuất bản"
                         type="date"
