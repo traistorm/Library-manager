@@ -481,10 +481,7 @@ function Book(props) {
             if (Cookies.get('token') != "undefined") {
 
                 if (isSearch == false) {
-                    // var formData = new FormData
-                    // formData.append("page", newPage);
-                    // formData.append("itemperpage", itemPerPage);
-                    // formData.append("token", Cookies.get('token'));
+                    
                     axios.get("http://localhost:8080/api/v1/books", {params : {"page": newPage, "itemperpage": itemPerPage, "token": Cookies.get('token')}}, {
                         headers: {
                             "Content-Type": "multipart/form-data",

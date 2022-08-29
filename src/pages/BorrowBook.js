@@ -85,57 +85,42 @@ function BorrowBook(props) {
     useEffect(() => {
         //alert(id)
         if (Cookies.get('token') != "undefined") {
-            axios.post("http://localhost:8080/api/v1/login", null, { params: { token: Cookies.get('token') } })
+
+            axios.get("http://localhost:8080/api/v1/borrow-pay", { params: { page: 1, itemperpage: itemPerPage } })
                 .then((res) => {
-                    //alert()
-                    if (res.status == 200) {
-                        axios.get("http://localhost:8080/api/v1/borrow-pay", { params: { page: 1, itemperpage: itemPerPage } })
-                            .then((res) => {
-                                //alert(res.data.borrowPayList.length)
-                                setBorrowPayList(res.data.borrowPayList);
-                                //setFullBookList(res.data)
-                                setMaxPage(res.data.maxPage)
-                                setLibraryCardList(res.data.libraryCardList)
-                                setStaffList(res.data.staffList)
-                                //alert(res.data.length)
-                                //alert()
-                            }, (error) => {
-                                alert(error)
-                            })
-                        axios.get("http://localhost:8080/api/v1/books")
-                            .then(res => {
-                                setBookFullList(res.data.bookList)
-                                //alert(res.data.bookList.length)
-                                //alert()
-                            }, (error) => {
-                                alert(error)
-                            })
-                        axios.get("http://localhost:8080/api/v1/library-cards")
-                            .then(res => {
-                                setLibraryCardFullList(res.data.libraryCardList)
-                                //alert(res.data.length)
-                                //alert()
-                            })
-                        axios.get("http://localhost:8080/api/v1/staffs")
-                            .then(res => {
-                                setStaffFullList(res.data.staffList)
-                                //alert(res.data.length)
-                            }, (error) => {
-                                alert(error)
-                            })
-
-
-                    }
-                    else {
-                        window.location.href = "/";
-                    }
+                    //alert(res.data.borrowPayList.length)
+                    setBorrowPayList(res.data.borrowPayList);
+                    //setFullBookList(res.data)
+                    setMaxPage(res.data.maxPage)
+                    setLibraryCardList(res.data.libraryCardList)
+                    setStaffList(res.data.staffList)
+                    //alert(res.data.length)
                     //alert()
                 }, (error) => {
-                    alert(Cookies.get('token'))
-                    if (error.response.status == 400 || error.response.status == 401 || error.response.status == 404) {
-                        window.location.href = "/"
-                    }
+                    alert(error)
                 })
+            axios.get("http://localhost:8080/api/v1/books")
+                .then(res => {
+                    setBookFullList(res.data.bookList)
+                    //alert(res.data.bookList.length)
+                    //alert()
+                }, (error) => {
+                    alert(error)
+                })
+            axios.get("http://localhost:8080/api/v1/library-cards")
+                .then(res => {
+                    setLibraryCardFullList(res.data.libraryCardList)
+                    //alert(res.data.length)
+                    //alert()
+                })
+            axios.get("http://localhost:8080/api/v1/staffs")
+                .then(res => {
+                    setStaffFullList(res.data.staffList)
+                    //alert(res.data.length)
+                }, (error) => {
+                    alert(error)
+                })
+
         }
         else {
 
