@@ -6,7 +6,8 @@ import { TableContainer, Table, TableHead, TableRow, TableCell, Paper, TableBody
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import Cookies from "js-cookie";
-
+import Footer from "../components/Footer";
+import "../css/staff.css"
 
 function Staff(props) {
     const style = {
@@ -44,10 +45,9 @@ function Staff(props) {
     }
     const handleOpenModalEditStaff = (e, data) => {
         //alert(e.target.dataset.staffid)
-        
+
         staffList.forEach(item => {
-            if (item.staffid == e.target.dataset.staffid)
-            {
+            if (item.staffid == e.target.dataset.staffid) {
                 setStaffIDOldEdit(item.staffid);
                 setStaffIDEdit(item.staffid);
                 setSexEdit(item.sex)
@@ -92,14 +92,33 @@ function Staff(props) {
 
     useEffect(() => {
         //alert(id)
-        axios.get("http://localhost:8080/api/v1/staffs", { params: { page: currentPage, itemperpage: itemPerPage } })
-            .then(res => {
-                setStaffList(res.data.staffList)
-                setMaxPage(res.data.maxPage)
-                //alert()
-            }, (error) => {
-                alert(error)
-            })
+        if (Cookies.get('token') != "undefined") {
+            axios.post('http://localhost:8080/api/v1/login', null, { params: { token: Cookies.get('token') } })
+                .then(res => {
+                    if (res.data.token.role != "admin") {
+                        window.location.href = "/home-user"
+                    }
+                    
+
+                },
+                    error => {
+                        alert(error);
+                    })
+            axios.get("http://localhost:8080/api/v1/staffs", { params: { page: currentPage, itemperpage: itemPerPage, token: Cookies.get('token') } })
+                .then(res => {
+                    setStaffList(res.data.staffList)
+                    setMaxPage(res.data.maxPage)
+                    //alert()
+                }, (error) => {
+                    if (error.response.status == 408) {
+                        window.location.href = "/";
+                    }
+                })
+        }
+        else {
+
+        }
+
 
         //alert(res.name)
     }, []);
@@ -118,7 +137,7 @@ function Staff(props) {
                 },
             })
                 .then((res) => {
-                    alert()
+                    window.location.href = "/staff";
 
                 }, (error) => {
                     if (error.response.status == 408) {
@@ -146,7 +165,7 @@ function Staff(props) {
                 },
             })
                 .then((res) => {
-                    alert()
+                    window.location.href = "/staff";
 
                 }, (error) => {
                     if (error.response.status == 408) {
@@ -160,12 +179,12 @@ function Staff(props) {
         }
     }
     return (
-        <div>
+        <div className="staff-component">
             <Navbar />
-            <div className="row ">
+            <div className="row " style={{ height: "70vh" }}>
                 <div class="col-lg-2 ml-3 mt-4">
                     <div className="border border-primary rounded p-3 mb-3">
-                        <h6 className="">Tìm kiếm nhân viên</h6>
+                        <h6 className="mouse-out-hover p-2" style={{ fontSize: "18px", zIndex: 1, color: "blue" }}>Tìm kiếm nhân viên</h6>
                         <TextField
                             id="standard-password-input"
                             label="Mã nhân viên"
@@ -198,7 +217,7 @@ function Staff(props) {
                 </div>
                 <div className="col-lg-8 justify-content-center ml-5">
                     <div className="row d-flex justify-content-center">
-                        <h4>DANH SÁCH MƯỢN SÁCH</h4>
+                        <h4 className="mt-4 mb-4 mouse-out-hover p-2" style={{ fontSize: "25px", zIndex: 1, color: "blue" }}>DANH SÁCH NHÂN VIÊN</h4>
                         <table class="table table-hover table-dark">
                             <thead>
                                 <tr>
@@ -426,6 +445,7 @@ function Staff(props) {
 
                 </Box>
             </Modal>
+            <Footer />
         </div>
     )
 }

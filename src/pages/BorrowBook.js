@@ -9,6 +9,8 @@ import AddIcon from '@mui/icons-material/Add';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
 import "../css/borrow-book.css"
+import Footer from "../components/Footer";
+
 
 function BorrowBook(props) {
     const style = {
@@ -145,6 +147,15 @@ function BorrowBook(props) {
     useEffect(() => {
         //alert(id)
         if (Cookies.get('token') != "undefined") {
+            axios.post('http://localhost:8080/api/v1/login', null, { params: { token: Cookies.get('token') } })
+                .then(res => {
+                    if (res.data.token.role != "admin") {
+                        window.location.href = "/home-user"
+                    }
+                },
+                    error => {
+                        alert(error);
+                    })
             axios.get("http://localhost:8080/api/v1/borrow-pay", { params: { page: 1, itemperpage: itemPerPage, "token": Cookies.get('token') } })
                 .then((res) => {
                     // alert(res.data.borrowPayList.length)
@@ -319,7 +330,7 @@ function BorrowBook(props) {
 
         <div className="borrow-book-component">
             <Navbar />
-            <div className="row ">
+            <div className="row " style={{ height: "70vh" }}>
                 <div class="col-lg-2 ml-3 mt-4">
                     <div className="border border-primary rounded p-3 mb-3">
                         <h6 className="mouse-out-hover p-2" style={{ fontSize: "17px", zIndex: 1 }}>Tìm kiếm mượn sách</h6>
@@ -358,7 +369,7 @@ function BorrowBook(props) {
                 </div>
                 <div className="col-lg-8 justify-content-center ml-5">
                     <div className="row d-flex justify-content-center">
-                        <h4 className="mt-4 mb-4 mouse-out-hover p-2" style={{ fontSize: "25px", zIndex: 1 }}>DANH SÁCH MƯỢN SÁCH</h4>
+                        <h4 className="mt-4 mb-4 mouse-out-hover p-2" style={{ fontSize: "25px", zIndex: 1, color: "blue" }}>DANH SÁCH MƯỢN SÁCH</h4>
                         <table class="table table-hover table-dark">
                             <thead>
                                 <tr>
@@ -622,6 +633,7 @@ function BorrowBook(props) {
                     </Button>
                 </Box>
             </Modal>
+            <Footer className="footer" />
         </div>
     )
 }

@@ -15,7 +15,13 @@ function Login(props) {
             //alert()
             axios.post('http://localhost:8080/api/v1/login', null, { params: { token: Cookies.get('token') } })
                 .then(res => {
-                    window.location.href = "/home"
+                    if (res.data.token.role == "admin") {
+                        window.location.href = "/home"
+                    }
+                    else {
+                        window.location.href = "/home-user"
+                    }
+
                 },
                     error => {
                         alert(error);
@@ -29,8 +35,13 @@ function Login(props) {
 
         axios.post('http://localhost:8080/api/v1/login', null, { params: { username: username, password: password } })
             .then(res => {
-                Cookies.set("token", res.data)
-                window.location.href = "/home"
+                Cookies.set("token", res.data.token.tokenvalue)
+                if (res.data.token.role == "admin") {
+                    window.location.href = "/home"
+                }
+                else {
+                    window.location.href = "/home-user"
+                }
             },
                 error => {
                     setWarning("Đăng nhập thất bại !")

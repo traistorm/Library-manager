@@ -15,7 +15,7 @@ import Cookies from "js-cookie";
 import "../css/home.css"
 import Footer from "../components/Footer";
 
-function Home(props) {
+function HomeUser(props) {
     const [bookTopViewList, setBookTopViewList] = useState([])
     const [index, setIndex] = useState(0);
 
@@ -61,6 +61,7 @@ function Home(props) {
     return (
         <div className="home-component">
             <Navbar />
+            <div>HOME USER</div>
 
             <div className="row d-flex justify-content-center">
                 <div className="col-lg-8 row d-flex justify-content-center">
@@ -111,4 +112,4 @@ function Home(props) {
         </div>
     )
 }
-export default Home
+export default HomeUser

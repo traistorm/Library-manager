@@ -7,6 +7,10 @@ import Cookies from "js-cookie";
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import DeleteIcon from '@mui/icons-material/Delete';
+import "../css/library-card.css"
+import Footer from "../components/Footer";
+
 
 function BorrowBook(props) {
     const [libraryCardList, setLibraryCardList] = useState([])
@@ -102,7 +106,16 @@ function BorrowBook(props) {
     useEffect(() => {
         //alert(id)
         if (Cookies.get('token') != "undefined") {
+            axios.post('http://localhost:8080/api/v1/login', null, { params: { token: Cookies.get('token') } })
+                .then(res => {
+                    if (res.data.token.role != "admin") {
+                        window.location.href = "/home-user"
+                    }
 
+                },
+                    error => {
+                        alert(error);
+                    })
             axios.get("http://localhost:8080/api/v1/library-cards", { params: { page: 1, itemperpage: itemPerPage, token: Cookies.get("token") } })
                 .then((res) => {
                     setMaxPage(res.data.maxPage)
@@ -180,39 +193,28 @@ function BorrowBook(props) {
     }
     const addLibraryCard = () => {
         if (Cookies.get('token') != "undefined") {
-            axios.post("http://localhost:8080/api/v1/login", null, { params: { token: Cookies.get('token') } })
-                .then((res) => {
-                    //alert()
-                    if (res.status == 200) {
-                        var bodyFormData = new FormData();
-                        bodyFormData.append("librarycardid", libraryCardIDAdd)
-                        bodyFormData.append("name", nameAdd)
-                        bodyFormData.append("starttime", startTimeAdd)
-                        bodyFormData.append("finishtime", finishTimeAdd)
-                        bodyFormData.append("token", Cookies.get('token'))
-                        //alert(finishTimeAdd)
-                        axios.post("http://localhost:8080/api/v1/library-cards", bodyFormData, {
-                            headers: {
-                                "Content-Type": "multipart/form-data",
-                            },
-                        })
-                            .then((res) => {
-                                alert()
 
-                            }, (error) => {
-                                alert(error)
-                            })
-                    }
-                    else {
+            var bodyFormData = new FormData();
+            bodyFormData.append("librarycardid", libraryCardIDAdd)
+            bodyFormData.append("name", nameAdd)
+            bodyFormData.append("starttime", startTimeAdd)
+            bodyFormData.append("finishtime", finishTimeAdd)
+            bodyFormData.append("token", Cookies.get('token'))
+            //alert(finishTimeAdd)
+            axios.post("http://localhost:8080/api/v1/library-cards", bodyFormData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+                .then((res) => {
+                    window.location.href = "/library-card";
+
+                }, (error) => {
+                    if (error.response.status == 408) {
                         window.location.href = "/";
                     }
-                    //alert()
-                }, (error) => {
-                    alert(Cookies.get('token'))
-                    if (error.response.status == 400 || error.response.status == 401 || error.response.status == 404) {
-                        window.location.href = "/"
-                    }
                 })
+
         }
         else {
 
@@ -298,12 +300,12 @@ function BorrowBook(props) {
     }
     return (
 
-        <div>
+        <div className="library-card-component">
             <Navbar />
-            <div className="row">
+            <div className="row" style={{ height: "70vh" }}>
                 <div class="col-lg-2 ml-3 mt-4">
                     <div className="border border-primary rounded p-3 mb-3">
-                        <h6 className="">Tìm kiếm thẻ thư viện</h6>
+                        <h6 className="mouse-out-hover p-2" style={{ fontSize: "18px", zIndex: 1, color: "blue" }}>Tìm kiếm thẻ thư viện</h6>
                         <TextField
                             id="standard-password-input"
                             label="Mã thẻ"
@@ -339,24 +341,24 @@ function BorrowBook(props) {
                 </div>
                 <div className="col-lg-8 ml-5">
                     <div className="row d-flex justify-content-center">
-                        <h4>DANH SÁCH THẺ THƯ VIỆN</h4>
+                        <h4 className="mt-4 mb-4 mouse-out-hover p-2" style={{ fontSize: "25px", zIndex: 1, color: "blue" }}>DANH SÁCH THẺ THƯ VIỆN</h4>
                         <table class="table table-hover table-dark">
                             <thead>
                                 <tr>
-                                    <th scope="col">Mã thẻ</th>
-                                    <th scope="col">Tên độc giả</th>
-                                    <th scope="col">Ngày nhận thẻ</th>
-                                    <th scope="col">Ngày hết hạn</th>
+                                    <th className="text-center" scope="col">Mã thẻ</th>
+                                    <th className="text-center" scope="col">Tên độc giả</th>
+                                    <th className="text-center" scope="col">Ngày nhận thẻ</th>
+                                    <th className="text-center" scope="col">Ngày hết hạn</th>
 
                                 </tr>
                             </thead>
                             <tbody>
                                 {libraryCardList.map(item => {
                                     return <tr >
-                                        <th onClick={handleOpenLibraryCardEditModel} data-librarycardid={item.librarycardid} scope="row">{item.librarycardid}</th>
-                                        <th onClick={handleOpenLibraryCardEditModel} data-librarycardid={item.librarycardid} scope="row">{item.name}</th>
-                                        <th onClick={handleOpenLibraryCardEditModel} data-librarycardid={item.librarycardid} scope="row">{item.starttime}</th>
-                                        <th onClick={handleOpenLibraryCardEditModel} data-librarycardid={item.librarycardid} scope="row">{item.finishtime}</th>
+                                        <th className="text-center" onClick={handleOpenLibraryCardEditModel} data-librarycardid={item.librarycardid} scope="row">{item.librarycardid}</th>
+                                        <th className="text-center" onClick={handleOpenLibraryCardEditModel} data-librarycardid={item.librarycardid} scope="row">{item.name}</th>
+                                        <th className="text-center" onClick={handleOpenLibraryCardEditModel} data-librarycardid={item.librarycardid} scope="row">{item.starttime}</th>
+                                        <th className="text-center" onClick={handleOpenLibraryCardEditModel} data-librarycardid={item.librarycardid} scope="row">{item.finishtime}</th>
 
                                     </tr>
                                 })}
@@ -378,8 +380,8 @@ function BorrowBook(props) {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={style} style={{borderRadius: "10px"}}>
-                    <Typography style={{color: "red"}} id="modal-modal-title" variant="h6" component="h2">
+                <Box sx={style} style={{ borderRadius: "10px" }}>
+                    <Typography style={{ color: "red" }} id="modal-modal-title" variant="h6" component="h2">
                         THÔNG TIN THẺ THƯ VIỆN
                     </Typography>
                     <TextField
@@ -426,7 +428,7 @@ function BorrowBook(props) {
                     <Button onClick={saveLibraryCardEdit} className="mr-2" variant="contained" endIcon={<AddIcon />}>
                         Lưu thông tin
                     </Button>
-                    <Button onClick={handleOpenModalConfirmDeleteLibraryCard} className="mr-2" variant="contained" endIcon={<AddIcon />}>
+                    <Button onClick={handleOpenModalConfirmDeleteLibraryCard} color="error" className="mr-2" variant="contained" endIcon={<DeleteIcon />}>
                         Xoá
                     </Button>
                 </Box>
@@ -513,6 +515,7 @@ function BorrowBook(props) {
                     </Button>
                 </Box>
             </Modal>
+            <Footer />
         </div>
     )
 }

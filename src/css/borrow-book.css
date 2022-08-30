@@ -1,0 +1,7 @@
+.borrow-book-component
+{
+    overflow-x: hidden;
+    height: 100vh;
+    z-index: -1;
+    background-color: rgb(212, 241, 245);
+}

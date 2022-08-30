@@ -12,9 +12,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import "../css/book.css"
 import Footer from "../components/Footer";
-import BookUser from "./BookUser";
 
-function Book(props) {
+function BookUser(props) {
     useEffect(() => {
         if (Cookies.get('token') != "undefined") {
             axios.post('http://localhost:8080/api/v1/login', null, { params: { token: Cookies.get('token') } })
@@ -30,6 +29,16 @@ function Book(props) {
                     error => {
                         alert(error);
                     })
+            axios.get("http://localhost:8080/api/v1/login")
+                .then(res => {
+                    if (res.data != "user") {
+                        window.location.href = "/";
+                    }
+                    //alert(res.data.length)
+                    //alert()
+                }, error => {
+                    window.location.href = "/";
+                })
             axios.get("http://localhost:8080/api/v1/books", { params: { page: currentPage, itemperpage: itemPerPage, token: Cookies.get("token") } })
                 .then(res => {
                     setBookList(res.data.bookList)
@@ -543,12 +552,6 @@ function Book(props) {
         window.location.href = "/read-book/" + e.target.dataset.bookid;
     }
 
-    if (props == "user") {
-        return (
-            <BookUser />
-        )
-    }
-
     return (
         <div className="book-component">
             <Navbar />
@@ -636,7 +639,7 @@ function Book(props) {
                         autoComplete="current-password"
                         variant="standard"
                         value={bookIDEditBook}
-                        onChange={handleChangeBookIDEditBook}
+                        onChange={null}
                         className="mb-2"
                     />
                     <TextField
@@ -647,7 +650,7 @@ function Book(props) {
                         variant="standard"
                         className="mb-2"
                         value={bookTitleEditBook}
-                        onChange={handleChangeTitleIDEditBook}
+                        onChange={null}
                     />
 
 
@@ -659,7 +662,7 @@ function Book(props) {
                         variant="standard"
                         className="mb-2"
                         value={viewEditBook}
-                        onChange={handleChangeViewEditBook}
+                        onChange={null}
                     />
                     <br></br>
                     <TextField
@@ -670,7 +673,7 @@ function Book(props) {
                         variant="standard"
                         className="mb-2"
                         value={remainingEditBook}
-                        onChange={handleChangeRemainingEditBook}
+                        onChange={null}
                     />
 
                     <br />
@@ -945,4 +948,4 @@ function Book(props) {
         </div>
     )
 }
-export default Book
+export default BookUser
