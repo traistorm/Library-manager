@@ -6,6 +6,7 @@ import { TableContainer, Table, TableHead, TableRow, TableCell, Paper, TableBody
 import Cookies from "js-cookie";
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 function BorrowBook(props) {
     const [libraryCardList, setLibraryCardList] = useState([])
@@ -35,6 +36,16 @@ function BorrowBook(props) {
 
 
     const [openModalAddLibraryCard, setOpenModalAddLibraryCard] = useState(false)
+
+    const [openModalConfirmDeleteLibraryCard, setOpenModalConfirmDeleteLibraryCard] = useState("");
+
+
+    const handleOpenModalConfirmDeleteLibraryCard = (e, value) => {
+        setOpenModalConfirmDeleteLibraryCard(true);
+    }
+    const handleCloseModalConfirmDeleteLibraryCard = (e, value) => {
+        setOpenModalConfirmDeleteLibraryCard(false);
+    }
 
     const handleChangeLibraryCardID = (e) => {
         setLibraryCardIDEdit(e.target.value)
@@ -91,30 +102,17 @@ function BorrowBook(props) {
     useEffect(() => {
         //alert(id)
         if (Cookies.get('token') != "undefined") {
-            axios.post("http://localhost:8080/api/v1/login", null, { params: { token: Cookies.get('token') } })
-                .then((res) => {
-                    //alert()
-                    if (res.status == 200) {
-                        axios.get("http://localhost:8080/api/v1/library-cards", { params: { page: 1, itemperpage: itemPerPage } })
-                            .then((res) => {
-                                setMaxPage(res.data.maxPage)
-                                setLibraryCardList(res.data.libraryCardList)
-                                //alert()
-                            }, (error) => {
-                                alert(error)
-                            })
 
-                    }
-                    else {
-                        window.location.href = "/";
-                    }
+            axios.get("http://localhost:8080/api/v1/library-cards", { params: { page: 1, itemperpage: itemPerPage, token: Cookies.get("token") } })
+                .then((res) => {
+                    setMaxPage(res.data.maxPage)
+                    setLibraryCardList(res.data.libraryCardList)
                     //alert()
                 }, (error) => {
-                    alert(Cookies.get('token'))
-                    if (error.response.status == 400 || error.response.status == 401 || error.response.status == 404) {
-                        window.location.href = "/"
-                    }
+                    alert(error)
                 })
+
+
         }
         else {
 
@@ -136,33 +134,49 @@ function BorrowBook(props) {
     };
 
     const saveLibraryCardEdit = () => {
-        var bodyFormData = new FormData();
-        bodyFormData.append("librarycardidold", libraryCardIDOldEdit)
-        bodyFormData.append("librarycardid", libraryCardIDEdit)
-        bodyFormData.append("name", nameEdit)
-        bodyFormData.append("starttime", startTimeEdit)
-        bodyFormData.append("finishtime", finishTimeEdit)
-        bodyFormData.append("test", 5)
-        //alert(startTimeEdit)
-        axios.put("http://localhost:8080/api/v1/library-cards", bodyFormData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        })
-            .then((res) => {
-                alert()
-
-            }, (error) => {
-                alert(error)
+        if (Cookies.get('token') != "undefined") {
+            var bodyFormData = new FormData();
+            bodyFormData.append("librarycardidold", libraryCardIDOldEdit)
+            bodyFormData.append("librarycardid", libraryCardIDEdit)
+            bodyFormData.append("name", nameEdit)
+            bodyFormData.append("starttime", startTimeEdit)
+            bodyFormData.append("finishtime", finishTimeEdit)
+            bodyFormData.append("token", Cookies.get('token'))
+            //alert(startTimeEdit)
+            axios.put("http://localhost:8080/api/v1/library-cards", bodyFormData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
             })
+                .then((res) => {
+                    window.location.href = "/library-card";
+
+                }, (error) => {
+                    if (error.response.status == 408) {
+                        window.location.href = "/";
+                    }
+                })
+        }
+        else {
+            window.location.href = "/";
+        }
+
     }
     const deleteLibraryCard = () => {
-        axios.delete("http://localhost:8080/api/v1/library-cards", { params: { librarycardid: libraryCardIDOldEdit } })
-            .then((res) => {
-                alert()
-            }, (error) => {
-                alert(error)
-            })
+        if (Cookies.get('token') != "undefined") {
+            axios.delete("http://localhost:8080/api/v1/library-cards", { params: { librarycardid: libraryCardIDOldEdit, token: Cookies.get("token") } })
+                .then((res) => {
+                    window.location.href = "/library-card";
+                }, (error) => {
+                    if (error.response.status == 408) {
+                        window.location.href = "/";
+                    }
+                })
+        }
+        else {
+
+        }
+
     }
     const addLibraryCard = () => {
         if (Cookies.get('token') != "undefined") {
@@ -175,6 +189,7 @@ function BorrowBook(props) {
                         bodyFormData.append("name", nameAdd)
                         bodyFormData.append("starttime", startTimeAdd)
                         bodyFormData.append("finishtime", finishTimeAdd)
+                        bodyFormData.append("token", Cookies.get('token'))
                         //alert(finishTimeAdd)
                         axios.post("http://localhost:8080/api/v1/library-cards", bodyFormData, {
                             headers: {
@@ -206,39 +221,21 @@ function BorrowBook(props) {
     }
     const searchLibraryCard = () => {
         if (Cookies.get('token') != "undefined") {
-            axios.post("http://localhost:8080/api/v1/login", null, { params: { token: Cookies.get('token') } })
+
+            axios.post("http://localhost:8080/api/v1/library-cards/search", null, { params: { librarycardid: libraryCardIDSearch, librarycardname: libraryCardNameSearch, page: 1, itemperpage: itemPerPage, token: Cookies.get('token') } }, {
+
+            })
                 .then((res) => {
-                    //alert()
-                    if (res.status == 200) {
-                        // var bodyFormData = new FormData();
-                        // bodyFormData.append("librarycardid", libraryCardIDAdd)
-                        // bodyFormData.append("name", nameAdd)
-                        // bodyFormData.append("starttime", startTimeAdd)
-                        // bodyFormData.append("finishtime", finishTimeAdd)
-                        // //alert(finishTimeAdd)
-                        //alert(libraryCardIDSearch)
-                        axios.post("http://localhost:8080/api/v1/library-cards/search", null, { params: { librarycardid: libraryCardIDSearch, librarycardname: libraryCardNameSearch, page: 1, itemperpage: itemPerPage } }, {
+                    setLibraryCardList(res.data.libraryCardList)
+                    //alert(res.data.libraryCardList.length)
+                    setIsSearch(true)
 
-                        })
-                            .then((res) => {
-                                setLibraryCardList(res.data.libraryCardList)
-                                //alert(res.data.libraryCardList.length)
-                                setIsSearch(true)
-
-                            }, (error) => {
-                                alert(error)
-                            })
-                    }
-                    else {
+                }, (error) => {
+                    if (error.response.status == 408) {
                         window.location.href = "/";
                     }
-                    //alert()
-                }, (error) => {
-                    alert(Cookies.get('token'))
-                    if (error.response.status == 400 || error.response.status == 401 || error.response.status == 404) {
-                        window.location.href = "/"
-                    }
                 })
+
         }
         else {
 
@@ -296,6 +293,9 @@ function BorrowBook(props) {
 
         };
     }
+    const reloadLibraryCard = () => {
+        window.location.href = "/library-card"
+    }
     return (
 
         <div>
@@ -324,8 +324,11 @@ function BorrowBook(props) {
                         />
 
                         <br />
-                        <Button onClick={searchLibraryCard} variant="contained" endIcon={<SearchIcon />}>
+                        <Button size="small" className="mr-2" onClick={searchLibraryCard} variant="contained" endIcon={<SearchIcon />}>
                             Tìm
+                        </Button>
+                        <Button color="success" size="small" onClick={reloadLibraryCard} variant="contained" endIcon={<RestartAltIcon />}>
+                            Tạo lại
                         </Button>
 
                     </div>
@@ -375,8 +378,8 @@ function BorrowBook(props) {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                <Box sx={style} style={{borderRadius: "10px"}}>
+                    <Typography style={{color: "red"}} id="modal-modal-title" variant="h6" component="h2">
                         THÔNG TIN THẺ THƯ VIỆN
                     </Typography>
                     <TextField
@@ -423,7 +426,7 @@ function BorrowBook(props) {
                     <Button onClick={saveLibraryCardEdit} className="mr-2" variant="contained" endIcon={<AddIcon />}>
                         Lưu thông tin
                     </Button>
-                    <Button onClick={deleteLibraryCard} className="mr-2" variant="contained" endIcon={<AddIcon />}>
+                    <Button onClick={handleOpenModalConfirmDeleteLibraryCard} className="mr-2" variant="contained" endIcon={<AddIcon />}>
                         Xoá
                     </Button>
                 </Box>
@@ -448,7 +451,7 @@ function BorrowBook(props) {
                     />
                     <TextField
                         id="standard-password-input"
-                        label="Tên thẻ"
+                        label="Tên độc giả"
                         type="text"
                         autoComplete="current-password"
                         variant="standard"
@@ -487,6 +490,27 @@ function BorrowBook(props) {
                         Thêm thẻ
                     </Button>
 
+                </Box>
+            </Modal>
+            <Modal
+                open={openModalConfirmDeleteLibraryCard}
+                onClose={handleCloseModalConfirmDeleteLibraryCard}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={{ ...style, width: 500 }}>
+                    <Typography className="" id="modal-modal-title" variant="h6" component="h2">
+                        Cảnh báo
+                    </Typography>
+                    <Typography className="text-danger mb-4" id="modal-modal-description" sx={{ mt: 2 }}>
+                        Bạn có chắc chắn muốn thẻ thư viện này?
+                    </Typography>
+                    <Button onClick={deleteLibraryCard} className="mr-2" variant="contained" endIcon={<AddIcon />}>
+                        Xoá
+                    </Button>
+                    <Button onClick={handleCloseModalConfirmDeleteLibraryCard} className="mr-2" variant="contained" endIcon={<AddIcon />}>
+                        Huỷ
+                    </Button>
                 </Box>
             </Modal>
         </div>

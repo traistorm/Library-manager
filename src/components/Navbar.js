@@ -1,12 +1,30 @@
 import "../css/navbar.css"
 import HomeIcon from '@mui/icons-material/Home';
 import LocalMallIcon from '@mui/icons-material/LocalMall';
+import Cookies from "js-cookie";
+import axios from "axios";
 const Navbar = () => {
+    const logout = () => {
+        if (Cookies.get("token") != undefined) {
+            axios.post("http://localhost:8080/api/v1/logout", null, { params: { token: Cookies.get("token") } })
+                .then(res => {
+                    //alert(Math.ceil(res.data.length / itemPerPage))
+                    //alert()
+                    window.location.href = "/";
+                }, error => {
+                    
+                })
+        }
+        else {
+            window.location.href = "/";
+        }
+
+    }
     return (
         <div className=''>
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <a href="/home"><img class="" style={{ width: '100px', height: '100px' }} src="https://images.unsplash.com/photo-1491841573634-28140fc7ced7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" alt="img" /></a>
-                
+
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -33,8 +51,7 @@ const Navbar = () => {
                             <div>
                                 <div class="dropdown-content">
                                     <a href="#">Quản lý tài khoản</a>
-                                    <a href="#">Đăng xuất</a>
-                                    <a href="#">Link 3</a>
+                                    <a onClick={logout} href="#">Đăng xuất</a>
                                 </div>
                             </div>
 

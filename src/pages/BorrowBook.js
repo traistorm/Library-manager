@@ -38,6 +38,7 @@ function BorrowBook(props) {
 
     const [borrowPayIDSearch, setborrowPayIDSearch] = useState("");
     const [borrowPayNameSearch, setBorrowPayNameSearch] = useState("");
+    const [borrowPayDateSearch, setBorrowPayDateSearch] = useState("");
     const [isSearch, setIsSearch] = useState(false)
 
     const [openModalEditBorrowPay, setOpenModalEditBorrowPay] = useState("");
@@ -228,7 +229,7 @@ function BorrowBook(props) {
     }
     const addNewBorrowBook = () => {
         if (Cookies.get('token') != "undefined") {
-            
+
             var bodyFormData = new FormData();
             bodyFormData.append("bookid", bookIDAdd)
             bodyFormData.append("borrowpaydate", borrowPayDateAdd)
@@ -256,36 +257,33 @@ function BorrowBook(props) {
     }
     const searchBorrowPay = () => {
         if (Cookies.get('token') != "undefined") {
-            axios.post("http://localhost:8080/api/v1/login", null, { params: { token: Cookies.get('token') } })
+            var bodyFormData = new FormData();
+            bodyFormData.append("borrowpayid", borrowPayIDSearch)
+            bodyFormData.append("borrowpayname", borrowPayNameSearch)
+            bodyFormData.append("page", 1)
+            bodyFormData.append("itemperpage", itemPerPage)
+            bodyFormData.append("token", Cookies.get('token'))
+
+            axios.post("http://localhost:8080/api/v1/borrow-pay/search", bodyFormData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
                 .then((res) => {
-                    //alert()
-                    if (res.status == 200) {
-                        axios.post("http://localhost:8080/api/v1/borrow-pay/search", null, { params: { borrowpayid: borrowPayIDSearch, borrowpayname: borrowPayNameSearch, page: 1, itemperpage: itemPerPage } }, {
+                    setBorrowPayList(res.data.borrowPayList);
+                    //setFullBookList(res.data)
+                    setMaxPage(res.data.maxPage)
+                    setLibraryCardList(res.data.libraryCardList)
+                    setStaffList(res.data.staffList)
+                    //alert(res.data.libraryCardList.length)
+                    setIsSearch(true)
 
-                        })
-                            .then((res) => {
-                                setBorrowPayList(res.data.borrowPayList);
-                                //setFullBookList(res.data)
-                                setMaxPage(res.data.maxPage)
-                                setLibraryCardList(res.data.libraryCardList)
-                                setStaffList(res.data.staffList)
-                                //alert(res.data.libraryCardList.length)
-                                setIsSearch(true)
-
-                            }, (error) => {
-                                alert(error)
-                            })
-                    }
-                    else {
+                }, (error) => {
+                    if (error.response.status == 408) {
                         window.location.href = "/";
                     }
-                    //alert()
-                }, (error) => {
-                    alert(Cookies.get('token'))
-                    if (error.response.status == 400 || error.response.status == 401 || error.response.status == 404) {
-                        window.location.href = "/"
-                    }
                 })
+
         }
         else {
 
@@ -315,7 +313,7 @@ function BorrowBook(props) {
         }
     }
     const reloadBorrowBook = () => {
-        window.location.href = "/book";
+        window.location.href = "/borrow-book";
     };
     return (
 
@@ -325,7 +323,7 @@ function BorrowBook(props) {
                 <div class="col-lg-2 ml-3 mt-4">
                     <div className="border border-primary rounded p-3 mb-3">
                         <h6 className="mouse-out-hover p-2" style={{ fontSize: "17px", zIndex: 1 }}>Tìm kiếm mượn sách</h6>
-                        <TextField
+                        {/* <TextField
                             id="standard-password-input"
                             label="Mã mượn"
                             type="text"
@@ -333,7 +331,7 @@ function BorrowBook(props) {
                             variant="standard"
                             value={borrowPayIDSearch}
                             onChange={handleChangeBorrowPayIDSearch}
-                        />
+                        /> */}
                         <TextField className="mb-3"
                             id="standard-password-input"
                             label="Tên người mượn"
